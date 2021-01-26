@@ -21,4 +21,8 @@ class Question extends Model
         return $this->belongsTo("App\FieldType",'field_type_id');
     }
 
+    public function answer(){
+        return $this->hasMany("App\Answer", "question_id","id");
+    }
+
 }

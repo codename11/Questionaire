@@ -23,7 +23,7 @@ class Questionaire extends Model
     }
 
     public function questions(){
-        return $this->hasManyThrough('App\Question', "App\PivotQuestionaire", "question_id", "id");
+        return $this->belongsToMany('App\Question', "App\PivotQuestionaire");
     }
 
 }

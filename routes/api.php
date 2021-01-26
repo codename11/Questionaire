@@ -20,3 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('getQuestionaires','QuestionairesController@index');
 Route::post('setQuestionaire','QuestionairesController@store');
+
+Route::get('getQuestions','QuestionsController@index');
+Route::post('setQuestion','QuestionsController@store');
+
+Route::get('getAnswers','AnswersController@index');
+Route::post('setAnswer','AnswersController@store');
