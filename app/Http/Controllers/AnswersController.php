@@ -16,7 +16,7 @@ class AnswersController extends Controller
      */
     public function index(Request $request)
     {
-        $answers = Answer::with("question")->get();
+        $answers = Answer::with("question")->paginate(5);
         //$questionaires = Questionaire::all();
         $response = array(
             "answers" => $answers,

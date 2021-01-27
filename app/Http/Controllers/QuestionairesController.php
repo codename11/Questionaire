@@ -20,7 +20,7 @@ class QuestionairesController extends Controller
      */
     public function index(Request $request)
     {
-        $questionaires = Questionaire::with("status", "user", "questions")->get();
+        $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
         //$questionaires = Questionaire::all();
         $response = array(
             "questionaires" => $questionaires,

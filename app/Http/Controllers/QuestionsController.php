@@ -17,7 +17,7 @@ class QuestionsController extends Controller
      */
     public function index(Request $request)
     {
-        $questions = Question::with("status", "fieldType", "answer")->get();
+        $questions = Question::with("status", "fieldType", "answer")->paginate(5);
         //$questionaires = Questionaire::all();
         $response = array(
             "questions" => $questions,
