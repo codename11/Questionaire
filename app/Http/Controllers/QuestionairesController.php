@@ -150,9 +150,72 @@ class QuestionairesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'questionaire_id' => 'required|numeric',
+                'name' => 'max:255',
+                'description' => 'max:255',
+                'status_id' => 'numeric',
+                'questions' => 'array',
+                'questions.*' => 'required|integer|numeric',
+            ]
+        );
+        $errors = $validation->errors();
+
+        $questionaire_id = $request->questionaire_id;
+        $name = $request->name;
+        $description = $request->description;
+        $status_id = $request->status_id;
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("patch")){
+
+                $questionaire = Questionaire::find($request->questionaire_id);
+                $questionaire->name = $request->name ? $request->name : $questionaire->name;
+                $questionaire->description = $request->description ? $request->description : $questionaire->description;
+                $questionaire->status_id = $request->status_id ? $request->status_id : $questionaire->status_id;
+                $questionaire->save();
+
+                $pivotQuestionaire = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->first();
+
+                $len1 = count($request->questions);
+                $len2 = count(PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get());
+                $original = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->first();
+                $pivotQuestionaire->delete();
+                for($i=0;$i<count($request->questions);$i++){
+
+                    $pivotQuestionaire = new PivotQuestionaire;
+                    $pivotQuestionaire->questionaire_id = $request->questionaire_id;
+                    $pivotQuestionaire->question_id = $request->questions[$i];
+                    $pivotQuestionaire->save();
+
+                }
+
+                $response = array(
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+
+        }
+        
     }
 
     /**

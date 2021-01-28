@@ -23,7 +23,7 @@ class Questionaire extends Model
     }
 
     public function questions(){
-        return $this->belongsToMany('App\Question', "App\PivotQuestionaire");
+        return $this->hasMany("App\PivotQuestionaire");
     }
 
 }
