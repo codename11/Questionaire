@@ -191,22 +191,50 @@ class QuestionairesController extends Controller
                 $questionaire->status_id = $request->status_id ? $request->status_id : $questionaire->status_id;
                 $questionaire->save();
 
-                $pivotQuestionaire = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->first();
+                $pivotQuestionaire = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get();
 
                 $len1 = count($request->questions);
                 $len2 = count(PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get());
-                $original = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->first();
-                $pivotQuestionaire->delete();
-                for($i=0;$i<count($request->questions);$i++){
+                $original = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get();
 
-                    $pivotQuestionaire = new PivotQuestionaire;
-                    $pivotQuestionaire->questionaire_id = $request->questionaire_id;
-                    $pivotQuestionaire->question_id = $request->questions[$i];
-                    $pivotQuestionaire->save();
+                $tmp = $len1 > $len2 ? $len1 : $len2;
+                $ttt="";
+                for($i=0;$i<$tmp;$i++){
+
+                    if($len2>=$len1 && $i<$len2){
+
+                        $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
+                        $pivotQuestionaire[$i]->question_id = $request->questions[$i];
+                        $pivotQuestionaire[$i]->save();
+
+                    }
+
+                    if($len2>=$len1 && $i>=$len2){
+                        
+                        $newPivotQuestionaire = new PivotQuestionaire;
+                        $newPivotQuestionaire->questionaire_id = $request->questionaire_id;
+                        $newPivotQuestionaire->question_id = $request->questions[$i];
+                        $newPivotQuestionaire->save();
+
+                    }
+
+                    if($len1>=$len2){
+
+                        $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
+                        $pivotQuestionaire[$i]->question_id = $request->questions[$i];
+                        $pivotQuestionaire[$i]->save();
+
+                        if($len1>=$len2 && PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)){
+                            $pivotQuestionaire[$i]->delete();
+                        }
+
+                    }
 
                 }
 
                 $response = array(
+                    "len1" => $len1,
+                    "len2" => $len2,
                     "request" => $request->all(),
                 );
                 
