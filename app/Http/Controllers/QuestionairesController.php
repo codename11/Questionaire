@@ -21,7 +21,6 @@ class QuestionairesController extends Controller
     public function index(Request $request)
     {
         $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
-        //$questionaires = Questionaire::all();
         $response = array(
             "questionaires" => $questionaires,
             "request" => $request->all(),
@@ -111,7 +110,7 @@ class QuestionairesController extends Controller
             }
 
             $response = array(
-                "message" => "bravo",
+                "message" => "Stored",
                 "request" => $request->all(),
             );
             
@@ -127,9 +126,17 @@ class QuestionairesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $questionaire = Questionaire::with("status", "user", "questions")->find($request->id);
+
+        $response = array(
+            "questionaire" => $questionaire,
+            "request" => $request->all(),
+        );
+        
+        return response()->json($response);
+
     }
 
     /**
@@ -198,43 +205,53 @@ class QuestionairesController extends Controller
                 $original = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get();
 
                 $tmp = $len1 > $len2 ? $len1 : $len2;
-                $ttt="";
+                $arr= [];
+
                 for($i=0;$i<$tmp;$i++){
-
-                    if($len2>=$len1 && $i<$len2){
-
-                        $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
-                        $pivotQuestionaire[$i]->question_id = $request->questions[$i];
-                        $pivotQuestionaire[$i]->save();
-
-                    }
-
-                    if($len2>=$len1 && $i>=$len2){
                         
+                    if($len1 > $len2 && $i>=$len2){
+
                         $newPivotQuestionaire = new PivotQuestionaire;
                         $newPivotQuestionaire->questionaire_id = $request->questionaire_id;
                         $newPivotQuestionaire->question_id = $request->questions[$i];
                         $newPivotQuestionaire->save();
-
+                        
                     }
 
-                    if($len1>=$len2){
+                    if($len1 > $len2 && $i<$len2){
 
                         $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
                         $pivotQuestionaire[$i]->question_id = $request->questions[$i];
                         $pivotQuestionaire[$i]->save();
 
-                        if($len1>=$len2 && PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)){
-                            $pivotQuestionaire[$i]->delete();
-                        }
+                    }
+
+                    if($len1 === $len2){
+
+                        $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
+                        $pivotQuestionaire[$i]->question_id = $request->questions[$i];
+                        $pivotQuestionaire[$i]->save();
+
+                    }
+
+                    if($len1 < $len2 && $i < $len1){
+
+                        $pivotQuestionaire[$i]->questionaire_id = $request->questionaire_id;
+                        $pivotQuestionaire[$i]->question_id = $request->questions[$i];
+                        $pivotQuestionaire[$i]->save();
+
+                    }
+
+                    if($len1 < $len2 && $i>=$len1){
+
+                        $pivotQuestionaire[$i]->delete();
 
                     }
 
                 }
 
                 $response = array(
-                    "len1" => $len1,
-                    "len2" => $len2,
+                    "message" => "Updated",
                     "request" => $request->all(),
                 );
                 
@@ -252,8 +269,18 @@ class QuestionairesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+
+        $questionaire = Questionaire::find($request->id);
+        $questionaire->delete();
+
+        $response = array(
+            "message" => "Deleted",
+            "request" => $request->all(),
+        );
+        
+        return response()->json($response);
+
     }
 }

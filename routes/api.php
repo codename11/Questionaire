@@ -21,6 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('getQuestionaires','QuestionairesController@index');
 Route::post('setQuestionaire','QuestionairesController@store');
 Route::patch('updateQuestionaire','QuestionairesController@update');
+Route::delete('deleteQuestionaire','QuestionairesController@destroy');
+Route::get('getQuestionaire','QuestionairesController@show');
 
 Route::get('getQuestions','QuestionsController@index');
 Route::post('setQuestion','QuestionsController@store');
