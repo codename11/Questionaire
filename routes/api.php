@@ -26,6 +26,9 @@ Route::get('getQuestionaire','QuestionairesController@show');
 
 Route::get('getQuestions','QuestionsController@index');
 Route::post('setQuestion','QuestionsController@store');
+Route::patch('updateQuestion','QuestionsController@update');
+Route::get('getQuestion','QuestionsController@show');
+Route::delete('deleteQuestion','QuestionsController@destroy');
 
 Route::get('getAnswers','AnswersController@index');
 Route::post('setAnswer','AnswersController@store');

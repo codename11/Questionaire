@@ -20,13 +20,18 @@ class QuestionairesController extends Controller
      */
     public function index(Request $request)
     {
-        $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
-        $response = array(
-            "questionaires" => $questionaires,
-            "request" => $request->all(),
-        );
+        if($request->isMethod("get")){
+
+            $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
+            $response = array(
+                "questionaires" => $questionaires,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
+
+        }
         
-        return response()->json($response);
     }
 
     /**
@@ -128,15 +133,42 @@ class QuestionairesController extends Controller
      */
     public function show(Request $request)
     {
-        $questionaire = Questionaire::with("status", "user", "questions")->find($request->id);
 
-        $response = array(
-            "questionaire" => $questionaire,
-            "request" => $request->all(),
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'id' => 'required|integer|numeric',
+            ]
         );
-        
-        return response()->json($response);
+        $errors = $validation->errors();
 
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("get")){
+
+                $questionaire = Questionaire::with("status", "user", "questions")->find($request->id);
+
+                $response = array(
+                    "questionaire" => $questionaire,
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
+        
     }
 
     /**
@@ -272,15 +304,41 @@ class QuestionairesController extends Controller
     public function destroy(Request $request)
     {
 
-        $questionaire = Questionaire::find($request->id);
-        $questionaire->delete();
-
-        $response = array(
-            "message" => "Deleted",
-            "request" => $request->all(),
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'id' => 'required|integer|numeric',
+            ]
         );
-        
-        return response()->json($response);
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("delete")){
+
+                $questionaire = Questionaire::find($request->id);
+                $questionaire->delete();
+    
+                $response = array(
+                    "message" => "Deleted",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+
+        }
 
     }
 }

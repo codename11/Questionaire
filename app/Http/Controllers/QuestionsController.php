@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Question;
 use App\PivotStatus;
 use App\FieldType;
+use App\Questionaire;
+use App\PivotQuestionaire;
 use Illuminate\Support\Facades\Validator;
 
 class QuestionsController extends Controller
@@ -17,14 +19,18 @@ class QuestionsController extends Controller
      */
     public function index(Request $request)
     {
-        $questions = Question::with("status", "fieldType", "answer")->paginate(5);
-        //$questionaires = Questionaire::all();
-        $response = array(
-            "questions" => $questions,
-            "request" => $request->all(),
-        );
+        if($request->isMethod("get")){
+
+            $questions = Question::with("status", "fieldType", "answer", "questionaires")->paginate(5);
+            $response = array(
+                "questions" => $questions,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
+
+        }
         
-        return response()->json($response);
     }
 
     /**
@@ -102,9 +108,44 @@ class QuestionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'question_id' => 'required|integer|numeric',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("get")){
+
+                $question = Question::with("status", "answer", "questionaires")->find($request->question_id);
+
+                $response = array(
+                    "question" => $question,
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
+
     }
 
     /**
@@ -125,9 +166,59 @@ class QuestionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $question_id = $request->question_id;
+        $name = $request->name;
+        $description = $request->description;
+        $status_id = $request->status_id;
+        $field_type_id = $request->field_type;
+
+        $validation = Validator::make(
+            $request->all(),
+            [
+                "question_id" => 'integer',
+                'name' => 'max:255',
+                'description' => 'max:255',
+                'status_id' => 'integer',
+                'field_type' => 'integer',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("patch")){
+
+                $question = Question::find($question_id);
+                $question->name = $name;
+                $question->description = $description;
+                $question->status_id = $status_id;
+                $question->field_type_id = $field_type_id;
+                
+                $question->save();
+
+                $response = array(
+                    "message" => "bravo",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
+
     }
 
     /**
@@ -136,8 +227,42 @@ class QuestionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'question_id' => 'required|integer|numeric',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("delete")){
+
+                $question = Question::find($request->question_id);
+                $question->delete();
+    
+                $response = array(
+                    "message" => "Deleted",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+
+        }
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
+    protected $table = 'questions';
     protected $fillable = [
         "name", 
         "description", 
@@ -23,6 +24,10 @@ class Question extends Model
 
     public function answer(){
         return $this->hasMany("App\Answer", "question_id","id");
+    }
+
+    public function questionaires(){
+        return $this->belongsToMany("App\Questionaire", "App\PivotQuestionaire");
     }
 
 }
