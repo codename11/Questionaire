@@ -50,7 +50,7 @@
 
 #### Notice: Array of associated questions will overwrite previous one. You can always omit updating questions associated. And associate questions separately.
 
- - `/deleteQuestionaire`, method is "DELETE". Deletes specific questionaire. Json is:
+ - `/deleteQuestionaire`, method is "DELETE". Deletes specific questionaire. Json structure:
  ```
     {
         "questionaire_id": 1
