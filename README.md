@@ -1,61 +1,121 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Laravel api  for creating Questionaires with Passport authentication
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+### Endpoints:
 
-## About Laravel
+ - Register user: `api/register`, method is "POST". Has these fields: name, email, password, password_confirmation. Returned values is user object with access token.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+ - Login user: `api/login`, method is "POST". Has these fields: email and password. Needs generated token.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+ - `/getQuestionaires`, method is "GET". Gets all questionaires with associated questions and user whom created it.
+ - `/getQuestionaire`, method is "GET". Gets specific questionaire with associated questions and user whom created it. 
+ Need to pass json with parameter `questionaire_id`.
+ ```
+    {
+        "questionaire_id": 1,
+    }
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+ - `/setQuestionaire`, method is "POST". json looks like this:
+ ```
+    {
+        "name": "Prvi",
+        "description": "Prvi",
+        "user_id": 2,
+        "status_id": 1,
+        "questions": [
+            5,
+            6
+        ]
+    }
+```
 
-## Learning Laravel
+#### Notice: Array of associated questions are set in the order of array indexes of said array. Members are id's of sid questions in their respective table. If there is no questions under these id's, error would be thrown.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+ - `/updateQuestionaire`, method is "PATCH". It updates said questionaire. 
+ Json structure:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ ```
+    {
+        "questionaire_id": 1,
+        "name": "Prvix1",
+        "description": "UnoX",
+        "user_id": 1,
+        "status_id": 1,
+        "questions": [
+            5,
+            2
+        ]
+    }
+```
 
-## Laravel Sponsors
+#### Notice: Array of associated questions will overwrite previous one. You can always omit updating questions associated. And associate questions separately.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+ - `/deleteQuestionaire`, method is "DELETE". Deletes specific questionaire. Json is:
+ ```
+    {
+        "questionaire_id": 1
+    }
+```
 
-### Premium Partners
+ - `/getQuestions`, method is "GET". Gets all the questions.
+ - `/setQuestion`, method is "POST". Creates questions.
+ Json structure: 
+ ```
+    {
+        "name": "Koliko uglova ima trougao",
+        "description": "Trougao",
+        "status_id": 1,
+        "field_type": 2
+    }
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+ - `/getQuestion`, method is "GET". Gets specific question with associated answer. 
+ - `/updateQuestion`, method is "PATCH". Updates specific question.
+  Json structure: 
+  ```
+    {
+        "question_id": 2,
+        "name": "Hemijski izraz za vodu",
+        "description": "VodaX",
+        "status_id": 1,
+        "field_type": 1
+    }
+```
 
-## Contributing
+ - `/deleteQuestion`, method is "DELETE". Deletes specific question.
+ - `/getAnswers`, method is "GET". Gets all the answers with their associated questions.
+ - `/setAnswer`, method is "POST". Creates new answer. Needs to be associated with question.
+Json structure: 
+ ```
+    {
+        "answer": "Crvene je boje.",
+        "question_id": 1
+    }
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+ - `/getAnswer`, method is "GET". Gets specific answer.
+Json structure:
+ ```
+    {
+        "answer_id": 2
+    }
+```
 
-## Code of Conduct
+ - `/updateAnswer`, method is "PATCH". Updates specific answer. 
+Json structure:
+  ```
+    {
+        "answer": "Vodica",
+        "answer_id": 2,
+        "question_id": 2
+    }
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+ - `/deleteAnswer`, method is "DELETE". Deletes specific answer. 
+Json structure:
+```
+    {
+        "answer_id": 2
+    }
+```
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

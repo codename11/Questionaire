@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\PivotQuestionaire;
@@ -137,7 +138,7 @@ class QuestionairesController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'id' => 'required|integer|numeric',
+                'questionaire_id' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -156,7 +157,7 @@ class QuestionairesController extends Controller
 
             if($request->isMethod("get")){
 
-                $questionaire = Questionaire::with("status", "user", "questions")->find($request->id);
+                $questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
 
                 $response = array(
                     "questionaire" => $questionaire,
@@ -326,7 +327,7 @@ class QuestionairesController extends Controller
 
             if($request->isMethod("delete")){
 
-                $questionaire = Questionaire::find($request->id);
+                $questionaire = Questionaire::find($request->questionaire_id);
                 $questionaire->delete();
     
                 $response = array(

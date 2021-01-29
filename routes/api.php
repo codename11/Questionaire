@@ -18,20 +18,23 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getQuestionaires','QuestionairesController@index');
-Route::post('setQuestionaire','QuestionairesController@store');
-Route::patch('updateQuestionaire','QuestionairesController@update');
-Route::delete('deleteQuestionaire','QuestionairesController@destroy');
-Route::get('getQuestionaire','QuestionairesController@show');
+Route::post('/register', 'Api\AuthController@register');
+Route::post('/login', 'Api\AuthController@login');
 
-Route::get('getQuestions','QuestionsController@index');
-Route::post('setQuestion','QuestionsController@store');
-Route::patch('updateQuestion','QuestionsController@update');
-Route::get('getQuestion','QuestionsController@show');
-Route::delete('deleteQuestion','QuestionsController@destroy');
+Route::get('getQuestionaires','api\QuestionairesController@index')->middleware('auth:api');
+Route::post('setQuestionaire','Api\QuestionairesController@store')->middleware('auth:api');
+Route::patch('updateQuestionaire','Api\QuestionairesController@update')->middleware('auth:api');
+Route::delete('deleteQuestionaire','Api\QuestionairesController@destroy')->middleware('auth:api');
+Route::get('getQuestionaire','Api\QuestionairesController@show')->middleware('auth:api');
 
-Route::get('getAnswers','AnswersController@index');
-Route::post('setAnswer','AnswersController@store');
-Route::get('getAnswer','AnswersController@show');
-Route::patch('updateAnswer','AnswersController@update');
-Route::delete('deleteAnswer','AnswersController@destroy');
+Route::get('getQuestions','Api\QuestionsController@index')->middleware('auth:api');
+Route::post('setQuestion','Api\QuestionsController@store')->middleware('auth:api');
+Route::patch('updateQuestion','Api\QuestionsController@update')->middleware('auth:api');
+Route::get('getQuestion','Api\QuestionsController@show')->middleware('auth:api');
+Route::delete('deleteQuestion','Api\QuestionsController@destroy')->middleware('auth:api');
+
+Route::get('getAnswers','Api\AnswersController@index')->middleware('auth:api');
+Route::post('setAnswer','Api\AnswersController@store')->middleware('auth:api');
+Route::get('getAnswer','Api\AnswersController@show')->middleware('auth:api');
+Route::patch('updateAnswer','Api\AnswersController@update')->middleware('auth:api');
+Route::delete('deleteAnswer','Api\AnswersController@destroy')->middleware('auth:api');

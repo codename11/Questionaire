@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Answer;
 use App\Question;
+use App\PivotStatus;
+use App\FieldType;
+use App\Questionaire;
+use App\PivotQuestionaire;
 use Illuminate\Support\Facades\Validator;
 
-class AnswersController extends Controller
+class QuestionsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,14 +21,18 @@ class AnswersController extends Controller
      */
     public function index(Request $request)
     {
-        $answers = Answer::with("question")->paginate(5);
-        //$questionaires = Questionaire::all();
-        $response = array(
-            "answers" => $answers,
-            "request" => $request->all(),
-        );
+        if($request->isMethod("get")){
+
+            $questions = Question::with("status", "fieldType", "answer", "questionaires")->paginate(5);
+            $response = array(
+                "questions" => $questions,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
+
+        }
         
-        return response()->json($response);
     }
 
     /**
@@ -44,14 +53,18 @@ class AnswersController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->answer;
-        $question_id = $request->question_id;
+        $name = $request->name;
+        $description = $request->description;
+        $status_id = $request->status_id;
+        $field_type_id = $request->field_type;
 
         $validation = Validator::make(
             $request->all(),
             [
-                'answer' => 'required|max:255',
-                'question_id' => 'required|integer',
+                'name' => 'required|max:255',
+                'description' => 'required|max:255',
+                'status_id' => 'required|integer',
+                'field_type' => 'required|integer',
             ]
         );
         $errors = $validation->errors();
@@ -70,10 +83,13 @@ class AnswersController extends Controller
 
             if($request->isMethod("post")){
 
-                $answer = new Answer;
-                $answer->name = $name;
-                $answer->question_id = $question_id;     
-                $answer->save();
+                $question = new Question;
+                $question->name = $name;
+                $question->description = $description;
+                $question->status_id = $status_id;
+                $question->field_type_id = $field_type_id;
+                
+                $question->save();
 
                 $response = array(
                     "message" => "bravo",
@@ -85,7 +101,7 @@ class AnswersController extends Controller
             }
             
         }
-
+        
     }
 
     /**
@@ -96,14 +112,42 @@ class AnswersController extends Controller
      */
     public function show(Request $request)
     {
-        $answer = Answer::with("question")->find($request->question_id);
-        //$questionaires = Questionaire::all();
-        $response = array(
-            "answer" => $answer,
-            "request" => $request->all(),
+
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'question_id' => 'required|integer|numeric',
+            ]
         );
-        
-        return response()->json($response);
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("get")){
+
+                $question = Question::with("status", "answer", "questionaires")->find($request->question_id);
+
+                $response = array(
+                    "question" => $question,
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
+
     }
 
     /**
@@ -126,16 +170,20 @@ class AnswersController extends Controller
      */
     public function update(Request $request)
     {
-        $name = $request->answer;
-        $answer_id = $request->answer_id;
         $question_id = $request->question_id;
+        $name = $request->name;
+        $description = $request->description;
+        $status_id = $request->status_id;
+        $field_type_id = $request->field_type;
 
         $validation = Validator::make(
             $request->all(),
             [
-                'answer' => 'required|max:255',
-                'answer_id' => 'required|integer',
-                'question_id' => 'required|integer',
+                "question_id" => 'integer',
+                'name' => 'max:255',
+                'description' => 'max:255',
+                'status_id' => 'integer',
+                'field_type' => 'integer',
             ]
         );
         $errors = $validation->errors();
@@ -154,10 +202,13 @@ class AnswersController extends Controller
 
             if($request->isMethod("patch")){
 
-                $answer = Answer::find($request->answer_id);
-                $answer->name = $name;
-                $answer->question_id = $question_id;     
-                $answer->save();
+                $question = Question::find($question_id);
+                $question->name = $name;
+                $question->description = $description;
+                $question->status_id = $status_id;
+                $question->field_type_id = $field_type_id;
+                
+                $question->save();
 
                 $response = array(
                     "message" => "bravo",
@@ -169,6 +220,7 @@ class AnswersController extends Controller
             }
             
         }
+
     }
 
     /**
@@ -182,7 +234,7 @@ class AnswersController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'answer_id' => 'required|integer|numeric',
+                'question_id' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -201,8 +253,8 @@ class AnswersController extends Controller
 
             if($request->isMethod("delete")){
 
-                $answer = Answer::find($request->answer_id);
-                $answer->delete();
+                $question = Question::find($request->question_id);
+                $question->delete();
     
                 $response = array(
                     "message" => "Deleted",
