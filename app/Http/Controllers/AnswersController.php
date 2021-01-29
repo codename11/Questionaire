@@ -94,9 +94,16 @@ class AnswersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $answer = Answer::with("question")->find($request->question_id);
+        //$questionaires = Questionaire::all();
+        $response = array(
+            "answer" => $answer,
+            "request" => $request->all(),
+        );
+        
+        return response()->json($response);
     }
 
     /**
@@ -117,9 +124,51 @@ class AnswersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $name = $request->answer;
+        $answer_id = $request->answer_id;
+        $question_id = $request->question_id;
+
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'answer' => 'required|max:255',
+                'answer_id' => 'required|integer',
+                'question_id' => 'required|integer',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("patch")){
+
+                $answer = Answer::find($request->answer_id);
+                $answer->name = $name;
+                $answer->question_id = $question_id;     
+                $answer->save();
+
+                $response = array(
+                    "message" => "bravo",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
     }
 
     /**
@@ -128,8 +177,42 @@ class AnswersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'answer_id' => 'required|integer|numeric',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("delete")){
+
+                $answer = Answer::find($request->answer_id);
+                $answer->delete();
+    
+                $response = array(
+                    "message" => "Deleted",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+
+        }
     }
 }

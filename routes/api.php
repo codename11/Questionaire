@@ -32,3 +32,6 @@ Route::delete('deleteQuestion','QuestionsController@destroy');
 
 Route::get('getAnswers','AnswersController@index');
 Route::post('setAnswer','AnswersController@store');
+Route::get('getAnswer','AnswersController@show');
+Route::patch('updateAnswer','AnswersController@update');
+Route::delete('deleteAnswer','AnswersController@destroy');
