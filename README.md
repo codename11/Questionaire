@@ -119,3 +119,12 @@ Json structure:
     }
 ```
 
+ - `/connect`, method is "PATCH". Updates specific questionaire with specific(one at a time) question. 
+ Json structure:
+ ```
+    {
+        "questionaire_id": 2,
+        "question_id": 2
+    }
+```
+

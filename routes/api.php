@@ -38,3 +38,5 @@ Route::post('setAnswer','Api\AnswersController@store')->middleware('auth:api');
 Route::get('getAnswer','Api\AnswersController@show')->middleware('auth:api');
 Route::patch('updateAnswer','Api\AnswersController@update')->middleware('auth:api');
 Route::delete('deleteAnswer','Api\AnswersController@destroy')->middleware('auth:api');
+
+Route::patch('connect','Api\PivotQuestionaireController@update')->middleware('auth:api');
