@@ -50,6 +50,7 @@ class RolesController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
+                'user_id' => 'required|integer|numeric',
                 'name' => 'required|max:255',
             ]
         );
@@ -71,7 +72,7 @@ class RolesController extends Controller
 
                 $role = new Role;
                 $role->name = $request->name;
-                
+                $role->user_id = $request->user_id;
                 $role->save();
 
                 $response = array(

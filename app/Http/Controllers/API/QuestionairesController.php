@@ -159,7 +159,7 @@ class QuestionairesController extends Controller
             if($request->isMethod("get")){
 
                 $questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
-                $this->authorize('view', $questionaire);
+                $this->authorize('view', $questionaire);//Authorization
                 $response = array(
                     "questionaire" => $questionaire,
                     "request" => $request->all(),
