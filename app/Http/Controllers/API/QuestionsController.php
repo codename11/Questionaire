@@ -10,6 +10,7 @@ use App\PivotStatus;
 use App\FieldType;
 use App\Questionaire;
 use App\PivotQuestionaire;
+use App\User;
 use Illuminate\Support\Facades\Validator;
 
 class QuestionsController extends Controller
@@ -23,7 +24,7 @@ class QuestionsController extends Controller
     {
         if($request->isMethod("get")){
 
-            $questions = Question::with("status", "fieldType", "answer", "questionaires")->paginate(5);
+            $questions = Question::with("status", "fieldType", "answer", "questionaires", "user")->paginate(5);
             $response = array(
                 "questions" => $questions,
                 "request" => $request->all(),
@@ -57,6 +58,7 @@ class QuestionsController extends Controller
         $description = $request->description;
         $status_id = $request->status_id;
         $field_type_id = $request->field_type;
+        $user_id = $request->user_id;
 
         $validation = Validator::make(
             $request->all(),
@@ -65,6 +67,7 @@ class QuestionsController extends Controller
                 'description' => 'required|max:255',
                 'status_id' => 'required|integer',
                 'field_type' => 'required|integer',
+                'user_id' => 'required|integer'
             ]
         );
         $errors = $validation->errors();
@@ -88,6 +91,7 @@ class QuestionsController extends Controller
                 $question->description = $description;
                 $question->status_id = $status_id;
                 $question->field_type_id = $field_type_id;
+                $question->user_id = $user_id;
                 
                 $question->save();
 
@@ -135,7 +139,7 @@ class QuestionsController extends Controller
 
             if($request->isMethod("get")){
 
-                $question = Question::with("status", "answer", "questionaires")->find($request->question_id);
+                $question = Question::with("status", "answer", "questionaires", "user")->find($request->question_id);
 
                 $response = array(
                     "question" => $question,

@@ -22,6 +22,11 @@ class AuthController extends Controller
         $user = User::create($validator);
         $accessToken = $user->createToken("authToken")->accessToken;
 
+        if($user->id === 1){
+            $user->role_id = 1;
+            $user->save();
+        }
+
         return response(["user" => $user, "access_token" => $accessToken]);
     
     }

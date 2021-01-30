@@ -21,6 +21,7 @@ class QuestionairesController extends Controller
      */
     public function index(Request $request)
     {
+        
         if($request->isMethod("get")){
 
             $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
@@ -158,7 +159,7 @@ class QuestionairesController extends Controller
             if($request->isMethod("get")){
 
                 $questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
-
+                $this->authorize('view', $questionaire);
                 $response = array(
                     "questionaire" => $questionaire,
                     "request" => $request->all(),

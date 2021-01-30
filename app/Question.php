@@ -30,4 +30,8 @@ class Question extends Model
         return $this->belongsToMany("App\Questionaire", "App\PivotQuestionaire");
     }
 
+    public function user(){
+        return $this->belongsTo("App\User",'user_id');
+    }
+
 }

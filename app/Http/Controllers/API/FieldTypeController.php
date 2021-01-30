@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
-use App\Answer;
-use App\Question;
-use Illuminate\Support\Facades\Validator;
+use App\FieldType;
 
-class AnswersController extends Controller
+class FieldTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,14 +15,18 @@ class AnswersController extends Controller
      */
     public function index(Request $request)
     {
-        $answers = Answer::with("question", "user")->paginate(5);
-        //$questionaires = Questionaire::all();
-        $response = array(
-            "answers" => $answers,
-            "request" => $request->all(),
-        );
+        if($request->isMethod("get")){
+
+            $fieldType = FieldType::with("question", "user")->paginate(5);
+            $response = array(
+                "answers" => $answers,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
+
+        }
         
-        return response()->json($response);
     }
 
     /**
@@ -46,16 +47,10 @@ class AnswersController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->answer;
-        $question_id = $request->question_id;
-        $user_id = $request->user_id;
-
         $validation = Validator::make(
             $request->all(),
             [
-                'answer' => 'required|max:255',
-                'question_id' => 'required|integer',
-                'user_id' => 'required|integer'
+                'name' => 'required|max:255',
             ]
         );
         $errors = $validation->errors();
@@ -74,11 +69,10 @@ class AnswersController extends Controller
 
             if($request->isMethod("post")){
 
-                $answer = new Answer;
-                $answer->name = $name;
-                $answer->question_id = $question_id;   
-                $answer->user_id = $user_id;   
-                $answer->save();
+                $fieldType = new FieldType;
+                $fieldType->name = $request->name;
+                
+                $fieldType->save();
 
                 $response = array(
                     "message" => "bravo",
@@ -90,7 +84,6 @@ class AnswersController extends Controller
             }
             
         }
-
     }
 
     /**
@@ -101,14 +94,42 @@ class AnswersController extends Controller
      */
     public function show(Request $request)
     {
-        $answer = Answer::with("question", "user")->find($request->answer_id);
-        //$questionaires = Questionaire::all();
-        $response = array(
-            "answer" => $answer,
-            "request" => $request->all(),
-        );
         
-        return response()->json($response);
+        $validation = Validator::make(
+            $request->all(),
+            [
+                'field_type_id' => 'required|integer|numeric',
+            ]
+        );
+        $errors = $validation->errors();
+
+        if($validation->fails()){
+
+            $response = array(
+                "message" => "Failed",
+                "errors" => $errors,
+
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            if($request->isMethod("get")){
+
+                $fieldType = FieldType::find($request->field_type_id);
+
+                $response = array(
+                    "fieldType" => $fieldType,
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+
+            }
+            
+        }
+
     }
 
     /**
@@ -131,16 +152,12 @@ class AnswersController extends Controller
      */
     public function update(Request $request)
     {
-        $name = $request->answer;
-        $answer_id = $request->answer_id;
-        $question_id = $request->question_id;
-
+        
         $validation = Validator::make(
             $request->all(),
             [
-                'answer' => 'required|max:255',
-                'answer_id' => 'required|integer',
-                'question_id' => 'required|integer',
+                "field_type_id" => 'required|integer',
+                'name' => 'required|max:255',
             ]
         );
         $errors = $validation->errors();
@@ -159,10 +176,10 @@ class AnswersController extends Controller
 
             if($request->isMethod("patch")){
 
-                $answer = Answer::find($request->answer_id);
-                $answer->name = $name;
-                $answer->question_id = $question_id;     
-                $answer->save();
+                $fieldType = FieldType::find($request->field_type_id);
+                $fieldType->name = $request->name;
+                
+                $fieldType->save();
 
                 $response = array(
                     "message" => "bravo",
@@ -174,6 +191,7 @@ class AnswersController extends Controller
             }
             
         }
+
     }
 
     /**
@@ -182,12 +200,13 @@ class AnswersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
+        
         $validation = Validator::make(
             $request->all(),
             [
-                'answer_id' => 'required|integer|numeric',
+                'field_type_id' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -206,8 +225,8 @@ class AnswersController extends Controller
 
             if($request->isMethod("delete")){
 
-                $answer = Answer::find($request->answer_id);
-                $answer->delete();
+                $fieldType = FieldType::find($request->field_type_id);
+                $fieldType->delete();
     
                 $response = array(
                     "message" => "Deleted",
@@ -219,5 +238,6 @@ class AnswersController extends Controller
             }
 
         }
+
     }
 }
