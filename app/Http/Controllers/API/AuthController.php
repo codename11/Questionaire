@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use App\Role;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -45,7 +46,10 @@ class AuthController extends Controller
         }
 
         $accessToken = auth()->user()->createToken("authToken")->accessToken;
-        return response(["user" => auth()->user(), "access_token" => $accessToken]);
+        $user = User::with("role")->find(auth()->user()->id);
+
+        //$questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
+        return response([$user, "access_token" => $accessToken]);
 
     }
 

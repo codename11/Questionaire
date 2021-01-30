@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-
+use App\Role;
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;
@@ -39,15 +39,7 @@ class User extends Authenticatable
     ];
 
     public function role(){
-        return $this->belongsToMany("App\Role", "role_id");
-    }
-
-    public function isAdmin(){
-        return $this->role()->where('name', 'Admin')->exists();
-    }
-
-    public function isUser(){
-        return $this->role()->where('name', 'User')->exists();
+        return $this->hasOne("App\Role", "id", "role_id");
     }
 
 }

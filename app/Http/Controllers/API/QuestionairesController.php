@@ -11,6 +11,7 @@ use App\Questionaire;
 use App\Question;
 use App\User;
 use App\PivotStatus;
+use App\Role;
 
 class QuestionairesController extends Controller
 {

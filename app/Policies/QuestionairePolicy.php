@@ -32,7 +32,8 @@ class QuestionairePolicy
      */
     public function view(User $user, Questionaire $questionaire)
     {
-        return $user->id ? Response::allow() : Response::deny('Access denied.');
+        $user = User::with("role")->find(auth()->user()->id);
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
