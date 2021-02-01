@@ -53,7 +53,7 @@ class FieldTypeController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'user_id' => 'required|integer'
+                'user_id' => 'required|integer',
                 'name' => 'required|max:255',
             ]
         );
