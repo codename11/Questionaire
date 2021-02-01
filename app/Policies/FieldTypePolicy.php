@@ -32,7 +32,7 @@ class FieldTypePolicy
      */
     public function view(User $user, FieldType $fieldType)
     {
-        //
+        return ($user->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -43,7 +43,7 @@ class FieldTypePolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -55,7 +55,7 @@ class FieldTypePolicy
      */
     public function update(User $user, FieldType $fieldType)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -67,7 +67,7 @@ class FieldTypePolicy
      */
     public function delete(User $user, FieldType $fieldType)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

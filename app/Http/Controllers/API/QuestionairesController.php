@@ -26,7 +26,10 @@ class QuestionairesController extends Controller
         if($request->isMethod("get")){
 
             $questionaires = Questionaire::with("status", "user", "questions")->paginate(5);
+            $this->authorize('view', $questionaires->first());
+            
             $response = array(
+                "isadmin"=> auth()->user()->role->name==="admin",
                 "questionaires" => $questionaires,
                 "request" => $request->all(),
             );
@@ -104,6 +107,7 @@ class QuestionairesController extends Controller
                 $questionaire->description = $description;
                 $questionaire->user_id = $user_id;
                 $questionaire->status_id = $status_id;
+                $this->authorize('create', $questionaire);
                 $questionaire->save();
 
                 for($i=0; $i<count($questions);$i++){
@@ -160,7 +164,7 @@ class QuestionairesController extends Controller
             if($request->isMethod("get")){
 
                 $questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
-                $this->authorize('view', $questionaire);//Authorization
+                $this->authorize('view', $questionaire);
                 $response = array(
                     "questionaire" => $questionaire,
                     "request" => $request->all(),
@@ -231,6 +235,7 @@ class QuestionairesController extends Controller
                 $questionaire->name = $request->name ? $request->name : $questionaire->name;
                 $questionaire->description = $request->description ? $request->description : $questionaire->description;
                 $questionaire->status_id = $request->status_id ? $request->status_id : $questionaire->status_id;
+                $this->authorize('update', $questionaire);
                 $questionaire->save();
 
                 $pivotQuestionaire = PivotQuestionaire::where("questionaire_id", "=", $request->questionaire_id)->get();
@@ -310,7 +315,7 @@ class QuestionairesController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'id' => 'required|integer|numeric',
+                'questionaire_id' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -330,6 +335,7 @@ class QuestionairesController extends Controller
             if($request->isMethod("delete")){
 
                 $questionaire = Questionaire::find($request->questionaire_id);
+                $this->authorize('delete', $questionaire);
                 $questionaire->delete();
     
                 $response = array(

@@ -31,7 +31,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role)
     {
-        //
+        return $user->id ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -42,7 +42,7 @@ class RolePolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -54,7 +54,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -66,7 +66,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

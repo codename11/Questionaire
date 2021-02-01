@@ -19,7 +19,8 @@ class AnswersController extends Controller
     public function index(Request $request)
     {
         $answers = Answer::with("question", "user")->paginate(5);
-        //$questionaires = Questionaire::all();
+        $this->authorize('view', $answers->first());
+        
         $response = array(
             "answers" => $answers,
             "request" => $request->all(),
@@ -46,6 +47,7 @@ class AnswersController extends Controller
      */
     public function store(Request $request)
     {
+        
         $name = $request->answer;
         $question_id = $request->question_id;
         $user_id = $request->user_id;
@@ -78,6 +80,7 @@ class AnswersController extends Controller
                 $answer->name = $name;
                 $answer->question_id = $question_id;   
                 $answer->user_id = $user_id;   
+                $this->authorize('create', $answer);
                 $answer->save();
 
                 $response = array(
@@ -102,7 +105,7 @@ class AnswersController extends Controller
     public function show(Request $request)
     {
         $answer = Answer::with("question", "user")->find($request->answer_id);
-        //$questionaires = Questionaire::all();
+        $this->authorize('view', $answer);
         $response = array(
             "answer" => $answer,
             "request" => $request->all(),
@@ -161,7 +164,8 @@ class AnswersController extends Controller
 
                 $answer = Answer::find($request->answer_id);
                 $answer->name = $name;
-                $answer->question_id = $question_id;     
+                $answer->question_id = $question_id; 
+                $this->authorize('update', $answer);    
                 $answer->save();
 
                 $response = array(
@@ -207,6 +211,7 @@ class AnswersController extends Controller
             if($request->isMethod("delete")){
 
                 $answer = Answer::find($request->answer_id);
+                $this->authorize('delete', $answer);
                 $answer->delete();
     
                 $response = array(

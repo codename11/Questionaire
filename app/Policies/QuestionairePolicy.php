@@ -41,9 +41,9 @@ class QuestionairePolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Questionaire $questionaire)
     {
-        return $user->id ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -55,7 +55,7 @@ class QuestionairePolicy
      */
     public function update(User $user, Questionaire $questionaire)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $questionaire->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -67,7 +67,7 @@ class QuestionairePolicy
      */
     public function delete(User $user, Questionaire $questionaire)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $questionaire->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

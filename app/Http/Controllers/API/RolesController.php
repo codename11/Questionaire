@@ -18,6 +18,7 @@ class RolesController extends Controller
         if($request->isMethod("get")){
 
             $roles = Role::with("users")->paginate(5);
+            $this->authorize('view', $roles);
             $response = array(
                 "roles" => $roles,
                 "request" => $request->all(),
@@ -46,7 +47,7 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [
@@ -120,7 +121,7 @@ class RolesController extends Controller
             if($request->isMethod("get")){
 
                 $role = Role::with("users")->find($request->role_id);
-
+                $this->authorize('view', $role);
                 $response = array(
                     "role" => $role,
                     "request" => $request->all(),
@@ -154,6 +155,7 @@ class RolesController extends Controller
      */
     public function update(Request $request)
     {
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [
@@ -203,7 +205,7 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [

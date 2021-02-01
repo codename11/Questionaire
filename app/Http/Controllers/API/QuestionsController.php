@@ -25,6 +25,7 @@ class QuestionsController extends Controller
         if($request->isMethod("get")){
 
             $questions = Question::with("status", "fieldType", "answer", "questionaires", "user")->paginate(5);
+            $this->authorize('view', $questions->first());
             $response = array(
                 "questions" => $questions,
                 "request" => $request->all(),
@@ -54,6 +55,7 @@ class QuestionsController extends Controller
      */
     public function store(Request $request)
     {
+        
         $name = $request->name;
         $description = $request->description;
         $status_id = $request->status_id;
@@ -92,7 +94,7 @@ class QuestionsController extends Controller
                 $question->status_id = $status_id;
                 $question->field_type_id = $field_type_id;
                 $question->user_id = $user_id;
-                
+                $this->authorize('create', $question);
                 $question->save();
 
                 $response = array(
@@ -140,7 +142,7 @@ class QuestionsController extends Controller
             if($request->isMethod("get")){
 
                 $question = Question::with("status", "answer", "questionaires", "user")->find($request->question_id);
-
+                $this->authorize('view', $question);
                 $response = array(
                     "question" => $question,
                     "request" => $request->all(),
@@ -211,7 +213,7 @@ class QuestionsController extends Controller
                 $question->description = $description;
                 $question->status_id = $status_id;
                 $question->field_type_id = $field_type_id;
-                
+                $this->authorize('update', $question);
                 $question->save();
 
                 $response = array(
@@ -258,6 +260,7 @@ class QuestionsController extends Controller
             if($request->isMethod("delete")){
 
                 $question = Question::find($request->question_id);
+                $this->authorize('delete', $question);
                 $question->delete();
     
                 $response = array(

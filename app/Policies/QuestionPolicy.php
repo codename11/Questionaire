@@ -32,7 +32,7 @@ class QuestionPolicy
      */
     public function view(User $user, Question $question)
     {
-        //
+        return $user->id ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -55,7 +55,7 @@ class QuestionPolicy
      */
     public function update(User $user, Question $question)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $question->user_id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -67,7 +67,7 @@ class QuestionPolicy
      */
     public function delete(User $user, Question $question)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $question->user_id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

@@ -32,7 +32,7 @@ class AnswerPolicy
      */
     public function view(User $user, Answer $answer)
     {
-        //
+        return ($user->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -43,7 +43,7 @@ class AnswerPolicy
      */
     public function create(User $user)
     {
-        return $user->id ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -55,7 +55,7 @@ class AnswerPolicy
      */
     public function update(User $user, Answer $answer)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $answer->user_id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -67,7 +67,7 @@ class AnswerPolicy
      */
     public function delete(User $user, Answer $answer)
     {
-        return ($user->id === $questionaire->id || $user->isAdmin()) ? Response::allow() : Response::deny('Access denied.');
+        return ($user->id === $answer->user_id || $user->role->name=="admin") ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

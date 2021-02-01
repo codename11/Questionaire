@@ -43,7 +43,7 @@ class PivotQuestionairePolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -55,7 +55,7 @@ class PivotQuestionairePolicy
      */
     public function update(User $user, PivotQuestionaire $pivotQuestionaire)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**
@@ -67,7 +67,7 @@ class PivotQuestionairePolicy
      */
     public function delete(User $user, PivotQuestionaire $pivotQuestionaire)
     {
-        return $user->isAdmin() ? Response::allow() : Response::deny('Access denied.');
+        return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }
 
     /**

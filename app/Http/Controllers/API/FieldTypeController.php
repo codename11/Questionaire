@@ -18,6 +18,7 @@ class FieldTypeController extends Controller
         if($request->isMethod("get")){
 
             $fieldType = FieldType::with("question", "user")->paginate(5);
+            $this->authorize('view', $fieldType);
             $response = array(
                 "answers" => $answers,
                 "request" => $request->all(),
@@ -47,6 +48,7 @@ class FieldTypeController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [
@@ -118,7 +120,7 @@ class FieldTypeController extends Controller
             if($request->isMethod("get")){
 
                 $fieldType = FieldType::find($request->field_type_id);
-
+                $this->authorize('view', $fieldType);
                 $response = array(
                     "fieldType" => $fieldType,
                     "request" => $request->all(),
@@ -177,6 +179,7 @@ class FieldTypeController extends Controller
             if($request->isMethod("patch")){
 
                 $fieldType = FieldType::find($request->field_type_id);
+                $this->authorize('update', $fieldType);
                 $fieldType->name = $request->name;
                 
                 $fieldType->save();
@@ -226,6 +229,7 @@ class FieldTypeController extends Controller
             if($request->isMethod("delete")){
 
                 $fieldType = FieldType::find($request->field_type_id);
+                $this->authorize('delete', $fieldType);
                 $fieldType->delete();
     
                 $response = array(

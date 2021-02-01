@@ -47,7 +47,7 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [
@@ -153,7 +153,7 @@ class StatusController extends Controller
      */
     public function update(Request $request)
     {
-
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [
@@ -203,6 +203,7 @@ class StatusController extends Controller
      */
     public function destroy(Request $request)
     {
+        $this->authorize('create', auth()->user());
         $validation = Validator::make(
             $request->all(),
             [

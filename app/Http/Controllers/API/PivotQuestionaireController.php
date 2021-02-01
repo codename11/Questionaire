@@ -39,7 +39,7 @@ class PivotQuestionaireController extends Controller
                 
                 $pivotQuestionaire = PivotQuestionaire::where("questionaire_id", "=", $questionaire_id)->first();
                 $pivotQuestionaire->question_id = $question_id;
-
+                $this->authorize('update', $pivotQuestionaire);
                 $pivotQuestionaire->save();
 
                 $response = array(
