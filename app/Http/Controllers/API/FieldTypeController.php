@@ -53,6 +53,7 @@ class FieldTypeController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
+                'user_id' => 'required|integer'
                 'name' => 'required|max:255',
             ]
         );
@@ -74,6 +75,7 @@ class FieldTypeController extends Controller
 
                 $fieldType = new FieldType;
                 $fieldType->name = $request->name;
+                $fieldType->user_id = $request->user_id;  
                 $this->authorize('create', $fieldType);
                 $fieldType->save();
 

@@ -51,6 +51,7 @@ class StatusController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
+                "user_id" => 'required|integer|numeric',
                 'name' => 'required|max:255',
             ]
         );
@@ -72,6 +73,7 @@ class StatusController extends Controller
 
                 $pivotStatus = new PivotStatus;
                 $pivotStatus->name = $request->name;
+                $pivotStatus->user_id = $request->name;
                 $this->authorize('create', $pivotStatus);
                 $pivotStatus->save();
 
@@ -96,6 +98,7 @@ class StatusController extends Controller
      */
     public function show(Request $request)
     {
+        $user_id = $request->user_id;
         $validation = Validator::make(
             $request->all(),
             [

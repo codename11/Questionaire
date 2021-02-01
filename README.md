@@ -6,6 +6,8 @@
 
  - Login user: `api/login`, method is "POST". Has these fields: email and password. Needs generated token.
 
+#### Questionaires
+
  - `/getQuestionaires`, method is "GET". Gets all questionaires with associated questions and user whom created it.
  - `/getQuestionaire`, method is "GET". Gets specific questionaire with associated questions and user whom created it. 
  Need to pass json with parameter `questionaire_id`.
@@ -57,6 +59,8 @@
     }
 ```
 
+#### Questions
+
  - `/getQuestions`, method is "GET". Gets all the questions.
  - `/setQuestion`, method is "POST". Creates questions.
  Json structure: 
@@ -84,6 +88,9 @@
 
  - `/deleteQuestion`, method is "DELETE". Deletes specific question.
  - `/getAnswers`, method is "GET". Gets all the answers with their associated questions.
+
+#### Answers
+
  - `/setAnswer`, method is "POST". Creates new answer. Needs to be associated with question.
 Json structure: 
  ```
@@ -119,6 +126,8 @@ Json structure:
     }
 ```
 
+#### Helper
+
  - `/connect`, method is "PATCH". Updates specific questionaire with specific(one at a time) question. 
  Json structure:
  ```
@@ -128,3 +137,111 @@ Json structure:
     }
 ```
 
+#### Status
+
+ - `/getStatuses`, method is "GET". Gets all statuses.
+ - `/setStatus`, method is "POST". Creates new status. Statuses determine if questionaire or question is accessible to use by all or just for private use for it's creator. If it's "free" or "private".
+Json structure:
+```
+    {
+        "name": "custom"
+    }
+```
+
+ - `/getStatus`, method is "GET". Gets specific status.
+Json structure:
+```
+    {
+        "status_id": 1
+    }
+```
+
+ - `/updateStatus`, method is "PATCH". Updates specific status.
+Json structure:
+```
+    {
+        "status_id": 3,
+        "name": "customFieldUpdate"
+    }
+```
+
+ - `/deleteStatus`, method is "DELETE". Delete specific status.
+Json structure:
+```
+    {
+        "status_id": 3
+    }
+```
+
+#### Roles
+
+ - `/getRoles`, method is "GET". Gets all roles.
+ - `/setRole`, method is "POST". Creates a new role.
+Json structure:
+```
+    {
+        "user_id": 2,
+        "name": "admin"
+    }
+```
+
+ - `/getRole`, method is "GET". Get specific role.
+Json structure:
+```
+    {
+        "role_id": 1
+    }
+```
+
+ - `/updateRole`, method is "PATCH". Updates specific role.
+Json structure:
+```
+    {
+        "role_id": 3,
+        "name": "adminatrix"
+    }
+```
+
+ - `/deleteRole`, method is "DELETE". Delete specific role.
+Json structure:
+```
+    {
+        "role_id": 3
+    }
+```
+
+#### Field types
+
+ - `/getFieldTypes`, method is "GET". Gets all field types. Types can be: radio, checkbox, or select-option.
+ - `/setFieldType`, method is "POST". Creates a new field type.
+Json structure:
+```
+    {
+        "user_id": 3,
+        "name": "customType"
+    }
+```
+
+ - `/getFieldType`, method is "GET". Get specific field type.
+Json structure:
+```
+    {
+        "field_type": 1
+    }
+```
+
+ - `/updateFieldType`, method is "PATCH". Updates specific field type.
+Json structure:
+```
+    {
+        "name": "radioX"
+    }
+```
+
+ - `/deleteFieldType`, method is "DELETE". Delete specific field type.
+Json structure:
+```
+    {
+        "role_id": 3
+    }
+```
