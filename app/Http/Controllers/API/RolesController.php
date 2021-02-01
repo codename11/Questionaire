@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Role;
+use App\User;
+use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
@@ -18,7 +20,7 @@ class RolesController extends Controller
         if($request->isMethod("get")){
 
             $roles = Role::with("users")->paginate(5);
-            $this->authorize('view', $roles);
+            $this->authorize('view', $roles->first());
             $response = array(
                 "roles" => $roles,
                 "request" => $request->all(),
@@ -47,7 +49,7 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -74,6 +76,7 @@ class RolesController extends Controller
                 $role = new Role;
                 $role->name = $request->name;
                 $role->user_id = $request->user_id;
+                $this->authorize('create', $role);
                 $role->save();
 
                 $response = array(
@@ -155,7 +158,7 @@ class RolesController extends Controller
      */
     public function update(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -181,7 +184,7 @@ class RolesController extends Controller
 
                 $role = Role::find($request->role_id);
                 $role->name = $request->name;
-                
+                $this->authorize('update', $role);
                 $role->save();
 
                 $response = array(
@@ -203,9 +206,9 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -229,6 +232,7 @@ class RolesController extends Controller
             if($request->isMethod("delete")){
 
                 $role = Role::find($request->role_id);
+                $this->authorize('delete', $role);
                 $role->delete();
     
                 $response = array(

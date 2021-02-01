@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\FieldType;
+use Illuminate\Support\Facades\Validator;
 
 class FieldTypeController extends Controller
 {
@@ -18,9 +19,9 @@ class FieldTypeController extends Controller
         if($request->isMethod("get")){
 
             $fieldType = FieldType::with("question", "user")->paginate(5);
-            $this->authorize('view', $fieldType);
+            $this->authorize('view', $fieldType->first());
             $response = array(
-                "answers" => $answers,
+                "fieldType" => $fieldType,
                 "request" => $request->all(),
             );
             
@@ -48,7 +49,7 @@ class FieldTypeController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -73,7 +74,7 @@ class FieldTypeController extends Controller
 
                 $fieldType = new FieldType;
                 $fieldType->name = $request->name;
-                
+                $this->authorize('create', $fieldType);
                 $fieldType->save();
 
                 $response = array(
@@ -203,7 +204,7 @@ class FieldTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         
         $validation = Validator::make(

@@ -40,7 +40,7 @@ class RolePolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Role $role)
     {
         return $user->role->name=="admin" ? Response::allow() : Response::deny('Access denied.');
     }

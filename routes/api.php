@@ -41,19 +41,19 @@ Route::delete('deleteAnswer','Api\AnswersController@destroy')->middleware('auth:
 
 Route::patch('connect','Api\PivotQuestionaireController@update')->middleware('auth:api');
 
-Route::get('getStatus','Api\StatusController@index')->middleware('auth:api');
+Route::get('getStatuses','Api\StatusController@index')->middleware('auth:api');
 Route::post('setStatus','Api\StatusController@store')->middleware('auth:api');
 Route::get('getStatus','Api\StatusController@show')->middleware('auth:api');
 Route::patch('updateStatus','Api\StatusController@update')->middleware('auth:api');
 Route::delete('deleteStatus','Api\StatusController@destroy')->middleware('auth:api');
 
-Route::get('getRole','Api\RoleController@index')->middleware('auth:api');
-Route::post('setRole','Api\RoleController@store')->middleware('auth:api');
-Route::get('getRole','Api\RoleController@show')->middleware('auth:api');
-Route::patch('updateRole','Api\RoleController@update')->middleware('auth:api');
-Route::delete('deleteRole','Api\RoleController@destroy')->middleware('auth:api');
+Route::get('getRoles','Api\RolesController@index')->middleware('auth:api');
+Route::post('setRole','Api\RolesController@store')->middleware('auth:api');
+Route::get('getRole','Api\RolesController@show')->middleware('auth:api');
+Route::patch('updateRole','Api\RolesController@update')->middleware('auth:api');
+Route::delete('deleteRole','Api\RolesController@destroy')->middleware('auth:api');
 
-Route::get('getFieldType','Api\FieldTypeController@index')->middleware('auth:api');
+Route::get('getFieldTypes','Api\FieldTypeController@index')->middleware('auth:api');
 Route::post('setFieldType','Api\FieldTypeController@store')->middleware('auth:api');
 Route::get('getFieldType','Api\FieldTypeController@show')->middleware('auth:api');
 Route::patch('updateFieldType','Api\FieldTypeController@update')->middleware('auth:api');

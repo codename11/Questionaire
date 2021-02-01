@@ -18,7 +18,7 @@ class StatusController extends Controller
     {
         if($request->isMethod("get")){
 
-            $pivotStatus = PivotStatus::all()->paginate(5);
+            $pivotStatus = PivotStatus::with("user")->paginate(5);
             $response = array(
                 "pivotStatus" => $pivotStatus,
                 "request" => $request->all(),
@@ -47,7 +47,7 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -72,7 +72,7 @@ class StatusController extends Controller
 
                 $pivotStatus = new PivotStatus;
                 $pivotStatus->name = $request->name;
-                
+                $this->authorize('create', $pivotStatus);
                 $pivotStatus->save();
 
                 $response = array(
@@ -153,7 +153,7 @@ class StatusController extends Controller
      */
     public function update(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -179,7 +179,7 @@ class StatusController extends Controller
 
                 $pivotStatus = PivotStatus::find($request->status_id);
                 $pivotStatus->name = $request->name;
-                
+                $this->authorize('update', $pivotStatus);
                 $pivotStatus->save();
 
                 $response = array(
@@ -203,7 +203,7 @@ class StatusController extends Controller
      */
     public function destroy(Request $request)
     {
-        $this->authorize('create', auth()->user());
+        
         $validation = Validator::make(
             $request->all(),
             [
@@ -227,6 +227,7 @@ class StatusController extends Controller
             if($request->isMethod("delete")){
 
                 $pivotStatus = PivotStatus::find($request->status_id);
+                $this->authorize('delete', $pivotStatus);
                 $pivotStatus->delete();
     
                 $response = array(
