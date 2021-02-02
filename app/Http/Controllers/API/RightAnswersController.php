@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
+use App\RightAnswer;
 use App\Question;
-use App\PivotStatus;
-use App\FieldType;
-use App\Questionaire;
-use App\PivotQuestionaire;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 
-class QuestionsController extends Controller
+class RightAnswersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,19 +18,22 @@ class QuestionsController extends Controller
      */
     public function index(Request $request)
     {
+
         if($request->isMethod("get")){
 
-            $questions = Question::with("status", "fieldType", "answer", "questionaires", "user")->paginate(5);
-            $this->authorize('view', $questions->first());
+            $rightAnswer = RightAnswer::with("user", "question")->paginate(5);
+            $this->authorize('view', $rightAnswer->first());
+            
             $response = array(
-                "questions" => $questions,
+                "isadmin"=> auth()->user()->role->name==="admin",
+                "rightAnswer" => $rightAnswer,
                 "request" => $request->all(),
             );
             
             return response()->json($response);
 
         }
-        
+
     }
 
     /**
@@ -55,23 +54,12 @@ class QuestionsController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $name = $request->name;
-        $description = $request->description;
-        $image = $request->image;
-        $status_id = $request->status_id;
-        $field_type_id = $request->field_type;
-        $user_id = $request->user_id;
-
         $validation = Validator::make(
             $request->all(),
             [
-                'name' => 'required|max:255',
-                'description' => 'required|max:255',
-                'image' => 'required|max:255',
-                'status_id' => 'required|integer',
-                'field_type' => 'required|integer',
-                'user_id' => 'required|integer'
+                'user_id' => 'required|numeric|integer',
+                'question_id' => 'required|numeric|integer',
+                'answer_id' => 'required|numeric|integer'
             ]
         );
         $errors = $validation->errors();
@@ -88,29 +76,30 @@ class QuestionsController extends Controller
         }
         else{
 
+            $user_id = $request->user_id;
+            $answer_id = $request->answer_id;
+            $question_id = $request->question_id;
+
             if($request->isMethod("post")){
 
-                $question = new Question;
-                $question->name = $name;
-                $question->description = $description;
-                $question->image = $image;
-                $question->status_id = $status_id;
-                $question->field_type_id = $field_type_id;
-                $question->user_id = $user_id;
-                $this->authorize('create', $question);
-                $question->save();
+                $rightAnswer = new RightAnswer;
+                $rightAnswer->user_id = $user_id;
+                $rightAnswer->question_id = $question_id;
+                $rightAnswer->answer_id = $answer_id;
 
-                $response = array(
-                    "message" => "bravo",
-                    "request" => $request->all(),
-                );
-                
-                return response()->json($response);
+                $this->authorize('create', $rightAnswer);
+                $rightAnswer->save();
 
             }
+
+            $response = array(
+                "message" => "Stored",
+                "request" => $request->all(),
+            );
             
+            return response()->json($response);
+
         }
-        
     }
 
     /**
@@ -121,11 +110,10 @@ class QuestionsController extends Controller
      */
     public function show(Request $request)
     {
-
         $validation = Validator::make(
             $request->all(),
             [
-                'question_id' => 'required|integer|numeric',
+                'rightAnswer' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -144,10 +132,10 @@ class QuestionsController extends Controller
 
             if($request->isMethod("get")){
 
-                $question = Question::with("status", "answer", "questionaires", "user")->find($request->question_id);
-                $this->authorize('view', $question);
+                $rightAnswer = RightAnswer::with("user", "question")->find($request->rightAnswer);
+                $this->authorize('view', $rightAnswer);
                 $response = array(
-                    "question" => $question,
+                    "rightAnswer" => $rightAnswer,
                     "request" => $request->all(),
                 );
                 
@@ -179,23 +167,19 @@ class QuestionsController extends Controller
      */
     public function update(Request $request)
     {
-        $question_id = $request->question_id;
-        $name = $request->name;
-        $description = $request->description;
-        $status_id = $request->status_id;
-        $field_type_id = $request->field_type;
-
         $validation = Validator::make(
             $request->all(),
             [
-                "question_id" => 'integer',
-                'name' => 'max:255',
-                'description' => 'max:255',
-                'status_id' => 'integer',
-                'field_type' => 'integer',
+                'rightAnswer_id' => 'required|numeric|integer',
+                'user_id' => 'required|integer|numeric',
+                'question_id' => 'required|integer|numeric'
             ]
         );
         $errors = $validation->errors();
+
+        $rightAnswer_id = $request->rightAnswer_id;
+        $user_id = $request->user_id;
+        $question_id = $request->question_id;
 
         if($validation->fails()){
 
@@ -211,25 +195,22 @@ class QuestionsController extends Controller
 
             if($request->isMethod("patch")){
 
-                $question = Question::find($question_id);
-                $question->name = $name;
-                $question->description = $description;
-                $question->status_id = $status_id;
-                $question->field_type_id = $field_type_id;
-                $this->authorize('update', $question);
-                $question->save();
+                $rightAnswer = RightAnswer::find($rightAnswer_id);
+                $rightAnswer->user_id = $request->user_id ? $request->user_id : $rightAnswer->user_id;
+                $rightAnswer->question_id = $request->question_id ? $request->question_id : $rightAnswer->question_id;
+                $this->authorize('update', $rightAnswer->first());
+                $rightAnswer->save();
 
                 $response = array(
-                    "message" => "bravo",
+                    "message" => "Updated",
                     "request" => $request->all(),
                 );
                 
                 return response()->json($response);
 
             }
-            
-        }
 
+        }
     }
 
     /**
@@ -243,7 +224,7 @@ class QuestionsController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'question_id' => 'required|integer|numeric',
+                'rightAnswer' => 'required|integer|numeric',
             ]
         );
         $errors = $validation->errors();
@@ -262,9 +243,9 @@ class QuestionsController extends Controller
 
             if($request->isMethod("delete")){
 
-                $question = Question::find($request->question_id);
-                $this->authorize('delete', $question);
-                $question->delete();
+                $rightAnswer = RightAnswer::find($request->rightAnswer);
+                $this->authorize('delete', $rightAnswer);
+                $rightAnswer->delete();
     
                 $response = array(
                     "message" => "Deleted",
@@ -276,5 +257,7 @@ class QuestionsController extends Controller
             }
 
         }
+
     }
+    
 }

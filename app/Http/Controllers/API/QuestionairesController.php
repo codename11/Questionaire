@@ -74,6 +74,7 @@ class QuestionairesController extends Controller
             [
                 'name' => 'required|max:255',
                 'description' => 'required|max:255',
+                'image' => 'required|max:255',
                 'user_id' => 'required|numeric',
                 'status_id' => 'required|numeric',
                 'questions' => 'required|array',
@@ -96,6 +97,7 @@ class QuestionairesController extends Controller
 
             $name = $request->name;
             $description = $request->description;
+            $image = $request->image;
             $user_id = $request->user_id;
             $status_id = $request->status_id;
             $questions = $request->questions;
@@ -105,6 +107,7 @@ class QuestionairesController extends Controller
                 $questionaire = new Questionaire;
                 $questionaire->name = $name;
                 $questionaire->description = $description;
+                $questionaire->image = $image;
                 $questionaire->user_id = $user_id;
                 $questionaire->status_id = $status_id;
                 $this->authorize('create', $questionaire);

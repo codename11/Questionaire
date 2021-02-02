@@ -245,3 +245,45 @@ Json structure:
         "role_id": 3
     }
 ```
+
+#### Right answers
+
+ - `/getRightAnswers`, method is "GET". Gets all the right answers.
+
+ - `/setRightAnswer`, method is "POST". Creates right answer of avaliable answers.
+Json structure:
+```
+    {
+        "user_id": 2,
+        "question_id": 2,
+        "answer_id": 4
+    }
+```
+
+ - `/getRightAnswer`, method is "GET". Gets specific right answers.
+Json structure:
+```
+    {
+        "rightAnswer": 4
+    }
+```
+
+ - `/updateRightAnswer`, method is "PATCH". Updates specific right answer.
+Json structure:
+```
+    {
+        "rightAnswer_id": 4,
+        "user_id": 2,
+        "question_id": 5
+    }
+```
+
+ - `/deleteRightAnswer`, method is "DELETE". Deletes specific right answer.
+Json structure:
+```
+    {
+        "rightAnswer": 4
+    }
+```
+
+

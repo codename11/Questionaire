@@ -58,3 +58,9 @@ Route::post('setFieldType','Api\FieldTypeController@store')->middleware('auth:ap
 Route::get('getFieldType','Api\FieldTypeController@show')->middleware('auth:api');
 Route::patch('updateFieldType','Api\FieldTypeController@update')->middleware('auth:api');
 Route::delete('deleteFieldType','Api\FieldTypeController@destroy')->middleware('auth:api');
+
+Route::get('getRightAnswers','Api\RightAnswersController@index')->middleware('auth:api');
+Route::post('setRightAnswer','Api\RightAnswersController@store')->middleware('auth:api');
+Route::get('getRightAnswer','Api\RightAnswersController@show')->middleware('auth:api');
+Route::patch('updateRightAnswer','Api\RightAnswersController@update')->middleware('auth:api');
+Route::delete('deleteRightAnswer','Api\RightAnswersController@destroy')->middleware('auth:api');
