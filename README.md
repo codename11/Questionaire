@@ -287,6 +287,6 @@ Json structure:
 ```
 
 ##### Addendum - Postman collection with all the calls:
-#### [Collection](https://www.getpostman.com/collections/f6f11f8cac591b3137dd)
+### [Collection](https://www.getpostman.com/collections/f6f11f8cac591b3137dd)
 
 
