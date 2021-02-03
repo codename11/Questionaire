@@ -8,6 +8,8 @@ use App\User;
 use App\Role;
 use Illuminate\Support\Facades\Hash;
 
+use App\Jobs\SendEmailJob;
+
 class AuthController extends Controller
 {
 
@@ -28,6 +30,10 @@ class AuthController extends Controller
             $user->save();
         }
 
+        $job = new SendEmailJob($user);
+        //dispatch($job)->delay(now()->addSeconds(10));
+        dispatch($job);
+
         return response(["user" => $user, "access_token" => $accessToken]);
     
     }
@@ -47,9 +53,8 @@ class AuthController extends Controller
 
         $accessToken = auth()->user()->createToken("authToken")->accessToken;
         $user = User::with("role")->find(auth()->user()->id);
-
-        //$questionaire = Questionaire::with("status", "user", "questions")->find($request->questionaire_id);
-        return response([$user, "access_token" => $accessToken]);
+    
+        return response(["Email is sent." , $user, "access_token" => $accessToken]);
 
     }
 
