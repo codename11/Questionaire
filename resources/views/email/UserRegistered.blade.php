@@ -68,7 +68,7 @@
             
             <div class="content">
 
-                @if($user) 
+                @if($user && $user->name && $user->email && $user->created_at) 
 
                     <p style="width: 100%; overflow-wrap: break-word; margin: 10px;">
                         User by the name <strong>{{$user->name}}</strong> 

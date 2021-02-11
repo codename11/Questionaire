@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmailMailable;
+use Throwable;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -20,6 +20,7 @@ class SendEmailJob implements ShouldQueue
      *
      * @return void
      */
+    public $tries = 5;//Pokusaji za izvrsavanje job-a.
     protected $user;
     public function __construct($user)
     {
@@ -35,4 +36,16 @@ class SendEmailJob implements ShouldQueue
     {
         Mail::to("example@example.com")->send(new SendEmailMailable($this->user));
     }
+
+    public function failed(Throwable $exception)
+    {
+        $message = "Email sending failed.";
+        $response = array(
+            "message" => $message,
+            "Errors" => $exception,
+        );
+        
+        return response()->json($response);
+    }
+
 }

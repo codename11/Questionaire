@@ -32,6 +32,7 @@ class AuthController extends Controller
 
         $job = new SendEmailJob($user);
         //dispatch($job)->delay(now()->addSeconds(10));
+        //dispatch($job)->afterResponse();
         dispatch($job);
 
         return response(["user" => $user, "access_token" => $accessToken]);
