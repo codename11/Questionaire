@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use Illuminate\Support\Facades\Hash;
-
 use App\Jobs\SendEmailJob;
 
 class AuthController extends Controller

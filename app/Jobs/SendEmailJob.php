@@ -25,6 +25,7 @@ class SendEmailJob implements ShouldQueue
     public function __construct($user)
     {
         $this->user = $user;
+        $this->onQueue('register_email_notification');//Specific queue.
     }
 
     /**
